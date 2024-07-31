@@ -10,7 +10,6 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -93,14 +92,16 @@ public class SecurityConfig {
 	@Bean
 	public RegisteredClientRepository registeredClientRepository() { //To register the client and the flow it will have
 		RegisteredClient oidcClient = RegisteredClient.withId(UUID.randomUUID().toString())
-				.clientId("public-client-react-app")
+				.clientId("client")
 				.clientSecret("secret") //can use a secret manager to store
 				.clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
+				.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+				.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
 				.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
 				.authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-				.redirectUri("http://127.0.0.1:8083/login/oauth2/code/public-client-react-app") //need explanation -- this is where the frotnend opens up
-				.postLogoutRedirectUri("http://127.0.0.1:8083/")
+				.redirectUri("http://localhost:3000/callback") //need explanation -- this is where the frotnend opens up
+				.postLogoutRedirectUri("http://localhost:3000")
 				.scope(OidcScopes.OPENID) 
 				.scope(OidcScopes.PROFILE)
 				.clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
